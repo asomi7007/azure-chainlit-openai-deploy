@@ -1,196 +1,130 @@
-# 🚀 Azure OpenAI + Chainlit 고급 AI 모델 배포
+# 🚀 Azure OpenAI + Chainlit 핸즈온 배포
 
-Azure OpenAI Service의 최신 AI 모델들(GPT-5, Sora, o3 시리즈)을 활용한 차세대 AI 챗봇을 원클릭으로 배포하세요!
+Azure OpenAI Service와 Chainlit를 활용한 AI 챗봇을 **자동 고유 이름**으로 배포합니다.  
+**리소스 그룹 중복 걱정 없이** 원클릭 배포 가능! 🎯
 
-## ✨ 지원 모델
-
-### 🧠 채팅 완성 모델
-- **GPT-4o** (기본) - 최신 멀티모달 모델
-- **GPT-4o Mini** - 빠르고 효율적인 경량 모델  
-- **GPT-4 Turbo** - 고성능 텍스트 모델
-- **🆕 GPT-5 Preview** - 차세대 언어 모델 (특별 액세스 필요)
-- **🆕 o3-mini** - 고급 추론 모델 (경량)
-- **🆕 o3-pro** - 최고 성능 추론 모델
-
-### 🎬 비디오 생성 (선택)
-- **🆕 Sora** - AI 비디오 생성 모델
-
-### 📊 임베딩 모델  
-- **text-embedding-ada-002** (기본)
-- **text-embedding-3-large** (고급 모델 활성화 시)
+## ✨ 주요 기능
+- 🤖 **Azure OpenAI GPT-4o** 최신 모델 활용
+- 💬 **Chainlit** 기반 사용자 친화적 채팅 인터페이스  
+- 📁 **파일 업로드** 및 분석 기능 (PDF, DOCX, 이미지)
+- 🔧 **Code Interpreter** - 실시간 코드 실행
+- 🔍 **File Search** - 업로드된 문서 검색
+- ☁️ **Azure Container Apps**에서 서버리스 실행
+- ✅ **자동 고유 명명** - 중복 이름 충돌 방지
 
 ## 🚀 원클릭 배포
 
+**중복 걱정 없이 바로 배포하세요!**
+
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fasomi7007%2Fazure-chainlit-openai-deploy%2Fmain%2Fazuredeploy.json)
 
-## ⚙️ 배포 파라미터
+## 🎯 스마트 네이밍 시스템
 
-| 파라미터 | 기본값 | 옵션 | 설명 |
-|---------|--------|------|------|
-| **projectName** | chainlit-openai | - | 모든 리소스의 기본 이름 |
-| **location** | eastus | eastus, westeurope, etc. | Azure 지역 |
-| **chatModel** | gpt-4o | gpt-4o, gpt-5-preview, o3-pro 등 | 주 채팅 모델 |
-| **enableSora** | false | true/false | Sora 비디오 생성 활성화 |
-| **enableAdvancedModels** | false | true/false | GPT-5, o3 시리즈 활성화 |
-| **modelCapacity** | 10 | 10, 20, 50, 100 | 모델 용량 (TPM 천 단위) |
-
-## 🎯 모델별 특징 및 사용 사례
-
-### 🤖 GPT-4o (권장 시작 모델)
+### 자동 생성되는 리소스 이름 예시:
 ```
-✅ 텍스트, 이미지, 오디오 멀티모달
-✅ 빠른 응답 속도  
-✅ 높은 정확도
-✅ 비용 효율적
-
-사용 사례: 일반 채팅, 문서 분석, 이미지 해석
+리소스 그룹: rg-chainlit-handson-a1b2c3d4
+OpenAI 서비스: chainlit-ai-a1b2c3d4-140930
+Container App: chainlit-app-a1b2c3d4-140930
+Environment: chainlit-env-a1b2c3d4-140930
 ```
 
-### 🧠 GPT-5 Preview (차세대!)
-```  
-🆕 더욱 향상된 추론 능력
-🆕 복잡한 문제 해결
-🆕 창의적 작업 특화
-⚠️ 특별 액세스 권한 필요
+**✅ 장점:**
+- 🔄 **완전 자동화** - 매번 다른 고유 이름
+- ⚡ **즉시 배포** - 이름 충돌로 인한 실패 없음
+- 🎯 **핸즈온 최적화** - 여러 참가자가 동시 배포 가능
 
-사용 사례: 고급 연구, 창작, 복합 문제 분석
+## 📋 배포 파라미터
+
+| 파라미터 | 기본값 | 설명 |
+|---------|--------|------|
+| baseName | chainlit | 모든 리소스의 기본 이름 |
+| location | eastus | Azure 지역 (OpenAI 지원 보장) |
+
+## 🎯 사용 방법
+
+### **핸즈온 참가자용:**
+1. **Deploy to Azure** 버튼 클릭 ⬆️
+2. **기본값 그대로 사용** (변경 불필요!)
+3. **리소스 그룹**: 새로 만들기 → `rg-chainlit-handson-[본인이니셜]`
+4. **만들기** 클릭 → 10-15분 대기 ☕
+5. **출력** 탭에서 Container App URL 확인
+6. **URL 클릭** → AI 채팅 시작! 🎉
+
+## 🧪 테스트 시나리오
+
+### **🔰 기본 채팅**
+```
+"안녕하세요! Azure OpenAI에 대해 간단히 설명해주세요"
 ```
 
-### 🔬 o3-pro (최강 추론!)
+### **💻 코딩 테스트**
 ```
-🧠 최고 수준의 수학적 추론
-🧠 과학적 문제 해결
-🧠 코딩 및 알고리즘 특화  
-💰 높은 비용
-
-사용 사례: 연구용 계산, 고급 프로그래밍, 수학 문제
+"Python으로 피보나치 수열을 생성하는 함수를 만들어주세요"
 ```
 
-### 🎬 Sora (비디오 생성)
+### **📊 데이터 분석**
 ```
-🎥 텍스트로 고품질 비디오 생성
-🎥 최대 60초 비디오 
-🎥 1080p 해상도
-⚠️ 높은 비용 및 특별 액세스 필요
-
-사용 사례: 교육용 비디오, 프레젠테이션, 창작
+"CSV 파일을 업로드하고 데이터를 분석해주세요"
 ```
 
-## 🎮 실습 시나리오
-
-### 🔰 기본 테스트 (GPT-4o)
+### **🎨 창작 활동**
 ```
-"안녕하세요! Python으로 데이터 시각화를 해주세요"
-"이 이미지에서 무엇을 볼 수 있나요?" (이미지 업로드)
+"미래 도시를 주제로 한 짧은 시를 써주세요"
 ```
 
-### 🧠 고급 추론 (o3-pro)
-```  
-"복잡한 수학 문제를 풀어주세요: 최적화 문제"
-"이 코드를 최적화하고 알고리즘을 개선해주세요"
-"과학적 가설을 검증하는 실험을 설계해주세요"
-```
+## 💰 예상 비용
 
-### 🎬 비디오 생성 (Sora)
-```
-"고양이가 공원에서 뛰어노는 30초 비디오를 만들어주세요"
-"미래 도시의 모습을 보여주는 비디오"
-"교육용 애니메이션: 광합성 과정"
-```
+- **Azure OpenAI**: 사용량 기반 (GPT-4o 토큰당)
+- **Container Apps**: ~$15-25/월 (vCPU 0.5, Memory 1GB)  
+- **Log Analytics**: 무료 티어 포함
 
-### 🚀 차세대 AI (GPT-5)
-```
-"창의적인 소설을 써주세요: SF 장르"  
-"복합적인 비즈니스 전략을 수립해주세요"
-"여러 학문을 융합한 혁신적 아이디어를 제안해주세요"
-```
+**총 예상: ~$20-30/월** (실제 사용량에 따라 변동)
 
-## 📊 성능 및 비용 비교
+## 🗑️ 리소스 정리 (중요!)
 
-| 모델 | 속도 | 정확도 | 비용 | 특장점 |
-|------|------|--------|------|---------|
-| GPT-4o | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | $ | 균형 잡힌 성능 |
-| GPT-4o Mini | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | $ | 빠르고 경제적 |
-| GPT-5 Preview | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | $$$ | 최고 창의성 |
-| o3-mini | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | $$ | 추론 특화 경량 |
-| o3-pro | ⭐⭐ | ⭐⭐⭐⭐⭐ | $$$$ | 최강 추론 |
-| Sora | ⭐⭐ | ⭐⭐⭐⭐ | $$$$$ | 비디오 생성 |
+**테스트 완료 후 반드시 정리하세요:**
 
-## 🛡️ 액세스 권한 안내
+### **Azure Portal에서:**
+1. **리소스 그룹** 검색
+2. `rg-chainlit-handson-xxxxx` 선택
+3. **리소스 그룹 삭제** 클릭
+4. 그룹 이름 입력하여 확인 삭제
 
-### 🔓 일반 액세스 (누구나 사용 가능)
-- GPT-4o, GPT-4o Mini, GPT-4, GPT-4 Turbo
-- text-embedding-ada-002
-
-### 🔒 특별 액세스 필요 (신청 후 승인)
-- **GPT-5 Preview**: [OpenAI 연구 프로그램](https://openai.com/research) 신청
-- **o3 시리즈**: [Azure OpenAI 고급 모델 액세스](https://aka.ms/oai/access) 신청  
-- **Sora**: [Sora 베타 프로그램](https://openai.com/sora) 신청
-
-⚠️ 특별 액세스가 없는 상태에서 해당 모델을 선택하면 배포가 실패할 수 있습니다.
-
-## 💰 예상 비용 (월간)
-
-### 기본 구성 (GPT-4o)
-```
-🏗️ 인프라: ~$25-35
-🤖 GPT-4o: ~$20-50 (사용량 기반)
-📊 총합: ~$45-85/월
-```
-
-### 고급 구성 (o3-pro + Sora)
-```
-🏗️ 인프라: ~$25-35
-🧠 o3-pro: ~$100-300 (사용량 기반)  
-🎬 Sora: ~$200-500 (비디오 생성량 기반)
-📊 총합: ~$325-835/월
-```
-
-## 🗑️ 리소스 정리
-
-테스트 완료 후 비용 절약을 위해 리소스 정리:
-
+### **Azure CLI로:**
 ```bash
-# Azure CLI로 정리
-az group delete --name [리소스-그룹-이름] --yes --no-wait
+# 리소스 그룹 목록 확인
+az group list --query "[?contains(name, 'chainlit')].name" -o table
 
-# 또는 Azure Portal에서 리소스 그룹 삭제
+# 특정 리소스 그룹 삭제
+az group delete --name rg-chainlit-handson-xxxxx --yes --no-wait
 ```
 
-## ⚠️ 주의사항
+## ⚠️ 핸즈온 주의사항
 
-- **지역 제한**: 최신 모델은 특정 지역에서만 지원 (US East, West Europe 권장)
-- **할당량 제한**: 고급 모델은 할당량 신청이 필요할 수 있음
-- **높은 비용**: o3-pro, Sora는 매우 높은 비용 발생 가능
-- **액세스 승인**: GPT-5, o3, Sora는 사전 승인 필요
-- **첫 로딩**: Container 이미지 다운로드로 2-3분 소요
-
-## 🔄 모델 변경
-
-배포 후 Azure Portal에서 다른 모델로 쉽게 변경 가능:
-
-1. Azure OpenAI Service → 모델 배포
-2. 새 모델 추가 배포
-3. Container App 환경변수에서 `AZURE_OPENAI_DEPLOYMENT_NAME` 변경
-4. Container App 재시작
+- ✅ **기본값 사용**: 파라미터 변경 불필요, 그대로 배포
+- ✅ **지역 선택**: East US 권장 (OpenAI 지원 보장)
+- ✅ **첫 로딩**: Container 이미지 다운로드로 1-2분 소요
+- ✅ **정리 필수**: 테스트 후 리소스 그룹 삭제로 비용 절약
 
 ## 📚 관련 문서
 
 - [Azure OpenAI Service](https://docs.microsoft.com/azure/ai-services/openai/)
-- [GPT-5 연구 문서](https://openai.com/research/gpt-5)
-- [o3 시리즈 소개](https://openai.com/o3)
-- [Sora 기술 문서](https://openai.com/sora)
-- [Chainlit 공식 문서](https://docs.chainlit.io/)
+- [Chainlit 공식 문서](https://docs.chainlit.io/)  
+- [Azure Container Apps](https://docs.microsoft.com/azure/container-apps/)
+- [Azure 가격 계산기](https://azure.microsoft.com/pricing/calculator/)
 
-## 🤝 기여하기
+## 🤝 지원 및 문의
 
-이 프로젝트 개선에 참여하세요:
-- 🐛 버그 리포트: Issues 탭
-- 💡 기능 제안: Discussions 탭  
-- 🔧 코드 기여: Pull Requests
+**문제 발생 시:**
+- 🔧 [GitHub Issues](https://github.com/asomi7007/azure-chainlit-openai-deploy/issues)
+- 📧 이메일 문의
+- 💬 실시간 지원 (핸즈온 중)
 
 ---
 
 ⭐ **이 리포지토리가 도움이 되셨다면 Star를 눌러주세요!**
 
-🚀 **차세대 AI의 힘을 직접 체험해보세요!**
+**🚀 중복 걱정 없는 스마트 배포로 AI의 미래를 체험하세요!**
+
+---
+**GitHub Repository**: https://github.com/asomi7007/azure-chainlit-openai-deploy/
