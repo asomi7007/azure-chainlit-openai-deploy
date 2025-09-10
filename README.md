@@ -21,7 +21,7 @@ Azure OpenAI Service의 최신 AI 모델들(GPT-5, Sora, o3 시리즈)을 활용
 
 ## 🚀 원클릭 배포
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2F[YOUR_USERNAME]%2Fazure-chainlit-openai-deploy%2Fmain%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fasomi7007%2Fazure-chainlit-openai-deploy%2Fmain%2Fazuredeploy.json)
 
 ## ⚙️ 배포 파라미터
 
