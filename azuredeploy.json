@@ -2,8 +2,8 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploy Azure OpenAI Assistant + Chainlit on Container Apps",
-    "author": "Azure Handson Template"
+    "description": "Deploy Azure OpenAI + Chainlit on Container Apps (Sweden Central)",
+    "author": "Azure Handson Template - Fixed Version"
   },
   "parameters": {
     "projectName": {
@@ -15,39 +15,24 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "eastus",
+      "defaultValue": "swedencentral",
       "allowedValues": [
+        "swedencentral",
         "eastus",
         "westeurope",
-        "southcentralus"
+        "northeurope"
       ],
       "metadata": {
-        "description": "Azure region (must support OpenAI Assistant API)"
-      }
-    },
-    "containerImageRepository": {
-      "type": "string",
-      "defaultValue": "samaea/chainlit-azure-openai",
-      "metadata": {
-        "description": "Docker Hub image for Chainlit app"
-      }
-    },
-    "containerImageTag": {
-      "type": "string",
-      "defaultValue": "latest",
-      "metadata": {
-        "description": "Container image tag"
+        "description": "Azure region - Sweden Central recommended"
       }
     }
   },
   "variables": {
     "uniqueSuffix": "[substring(uniqueString(resourceGroup().id), 0, 8)]",
     "openAIAccountName": "[concat(parameters('projectName'), '-openai-', variables('uniqueSuffix'))]",
-    "containerRegistryName": "[concat(replace(parameters('projectName'), '-', ''), 'acr', variables('uniqueSuffix'))]",
     "containerAppName": "[concat(parameters('projectName'), '-app-', variables('uniqueSuffix'))]",
     "containerAppEnvironmentName": "[concat(parameters('projectName'), '-env-', variables('uniqueSuffix'))]",
-    "logAnalyticsWorkspaceName": "[concat(parameters('projectName'), '-logs-', variables('uniqueSuffix'))]",
-    "appInsightsName": "[concat(parameters('projectName'), '-insights-', variables('uniqueSuffix'))]"
+    "logAnalyticsWorkspaceName": "[concat(parameters('projectName'), '-logs-', variables('uniqueSuffix'))]"
   },
   "resources": [
     {
@@ -60,20 +45,6 @@
           "name": "PerGB2018"
         },
         "retentionInDays": 30
-      }
-    },
-    {
-      "type": "Microsoft.Insights/components",
-      "apiVersion": "2020-02-02",
-      "name": "[variables('appInsightsName')]",
-      "location": "[parameters('location')]",
-      "kind": "web",
-      "dependsOn": [
-        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
-      ],
-      "properties": {
-        "Application_Type": "web",
-        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
       }
     },
     {
@@ -93,17 +64,16 @@
     {
       "type": "Microsoft.CognitiveServices/accounts/deployments",
       "apiVersion": "2023-10-01-preview",
-      "name": "[concat(variables('openAIAccountName'), '/gpt-4-assistant')]",
+      "name": "[concat(variables('openAIAccountName'), '/gpt-4o')]",
       "dependsOn": [
         "[resourceId('Microsoft.CognitiveServices/accounts', variables('openAIAccountName'))]"
       ],
       "properties": {
         "model": {
           "format": "OpenAI",
-          "name": "gpt-4",
-          "version": "0125-Preview"
-        },
-        "raiPolicyName": "Microsoft.Default"
+          "name": "gpt-4o",
+          "version": "2024-08-06"
+        }
       },
       "sku": {
         "name": "Standard",
@@ -111,16 +81,22 @@
       }
     },
     {
-      "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2023-07-01",
-      "name": "[variables('containerRegistryName')]",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "Basic"
-      },
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "apiVersion": "2023-10-01-preview",
+      "name": "[concat(variables('openAIAccountName'), '/text-embedding-ada-002')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', variables('openAIAccountName'))]"
+      ],
       "properties": {
-        "adminUserEnabled": true,
-        "publicNetworkAccess": "Enabled"
+        "model": {
+          "format": "OpenAI",
+          "name": "text-embedding-ada-002",
+          "version": "2"
+        }
+      },
+      "sku": {
+        "name": "Standard",
+        "capacity": 5
       }
     },
     {
@@ -129,8 +105,7 @@
       "name": "[variables('containerAppEnvironmentName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
-        "[resourceId('Microsoft.Insights/components', variables('appInsightsName'))]"
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
       ],
       "properties": {
         "appLogsConfiguration": {
@@ -149,7 +124,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.App/managedEnvironments', variables('containerAppEnvironmentName'))]",
-        "[resourceId('Microsoft.CognitiveServices/accounts/deployments', variables('openAIAccountName'), 'gpt-4-assistant')]"
+        "[resourceId('Microsoft.CognitiveServices/accounts/deployments', variables('openAIAccountName'), 'gpt-4o')]"
       ],
       "identity": {
         "type": "SystemAssigned"
@@ -167,13 +142,19 @@
                 "latestRevision": true
               }
             ]
-          }
+          },
+          "secrets": [
+            {
+              "name": "openai-key",
+              "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('openAIAccountName')), '2023-10-01-preview').key1]"
+            }
+          ]
         },
         "template": {
           "containers": [
             {
               "name": "chainlit-app",
-              "image": "[concat(parameters('containerImageRepository'), ':', parameters('containerImageTag'))]",
+              "image": "samaea/chainlit-azure-openai:latest",
               "env": [
                 {
                   "name": "AZURE_OPENAI_ENDPOINT",
@@ -185,39 +166,19 @@
                 },
                 {
                   "name": "AZURE_OPENAI_API_VERSION",
-                  "value": "2024-05-01-preview"
+                  "value": "2024-08-01-preview"
                 },
                 {
                   "name": "AZURE_OPENAI_DEPLOYMENT_NAME",
-                  "value": "[parameters('chatModel')]"
+                  "value": "gpt-4o"
                 },
                 {
                   "name": "AZURE_OPENAI_EMBEDDING_DEPLOYMENT",
-                  "value": "[if(parameters('enableAdvancedModels'), 'text-embedding-3-large', 'text-embedding-ada-002')]"
-                },
-                {
-                  "name": "ENABLE_SORA",
-                  "value": "[string(parameters('enableSora'))]"
-                },
-                {
-                  "name": "SORA_DEPLOYMENT_NAME",
-                  "value": "[if(parameters('enableSora'), 'sora-preview', '')]"
-                },
-                {
-                  "name": "ENABLE_ADVANCED_MODELS",
-                  "value": "[string(parameters('enableAdvancedModels'))]"
-                },
-                {
-                  "name": "SELECTED_MODEL",
-                  "value": "[parameters('chatModel')]"
+                  "value": "text-embedding-ada-002"
                 },
                 {
                   "name": "OPENAI_ASSISTANT_ID",
                   "value": "auto-create"
-                },
-                {
-                  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                  "value": "[reference(resourceId('Microsoft.Insights/components', variables('appInsightsName'))).ConnectionString]"
                 }
               ],
               "resources": {
@@ -228,25 +189,9 @@
           ],
           "scale": {
             "minReplicas": 1,
-            "maxReplicas": 3,
-            "rules": [
-              {
-                "name": "http-scaling",
-                "http": {
-                  "metadata": {
-                    "concurrentRequests": "10"
-                  }
-                }
-              }
-            ]
+            "maxReplicas": 2
           }
-        },
-        "secrets": [
-          {
-            "name": "openai-key",
-            "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('openAIAccountName')), '2023-10-01-preview').key1]"
-          }
-        ]
+        }
       }
     },
     {
